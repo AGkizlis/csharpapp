@@ -1,16 +1,16 @@
 namespace CSharpApp.Application.Services;
 
-public sealed class TodoService(HttpClient httpClient) : ITodoService, IDisposable
+public sealed class TodoService(HttpClient httpClient, ILogger<TodoService> logger) : ITodoService, IDisposable
 {
 
 	public async Task<TodoRecord?> GetTodoByIdAsync(int id)
 	{
-		return await httpClient.GetFromJsonAsync<TodoRecord>($"todos/{id}");
+		return await GetFromJsonAsync<TodoRecord>($"todos/{id}");
 	}
 
 	public async Task<ReadOnlyCollection<TodoRecord>> GetAllTodosAsync()
 	{
-		var response = await httpClient.GetFromJsonAsync<List<TodoRecord>>($"todos");
+		var response = await GetFromJsonAsync<List<TodoRecord>>($"todos");
 		response ??= [];
 		return response.AsReadOnly();
 	}
@@ -31,6 +31,7 @@ public sealed class TodoService(HttpClient httpClient) : ITodoService, IDisposab
 				case System.Net.HttpStatusCode.NoContent:
 					return default;
 				default:
+					logger.LogWarning(ex, "Third party API for Todos failed in TodoService.");
 					throw;
 			}
 		}
