@@ -119,6 +119,7 @@ app.MapGet("/posts/{id}", async ([FromRoute] int id, [FromServices] IPostsServic
 		.WithName("GetPostById")
 		.WithOpenApi()
 		.Produces<PostRecord?>(StatusCodes.Status200OK)
+		.Produces(StatusCodes.Status404NotFound)
 		.Produces(StatusCodes.Status503ServiceUnavailable);
 
 app.MapPost("/posts", async ([FromBody] PostRecordToAdd newPost, [FromServices] IPostsService postsService) => 
