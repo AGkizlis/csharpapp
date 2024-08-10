@@ -40,7 +40,7 @@ app.MapGet("/todos", async ([FromServices] ITodoService todoService) =>
 			ReadOnlyCollection<TodoRecord> todos;
 			try
 			{
-				todos = await todoService.GetAllTodos();
+				todos = await todoService.GetAllTodosAsync();
 				return Results.Ok(todos);
 			}
 			catch (HttpRequestException ex)
@@ -57,7 +57,7 @@ app.MapGet("/todos/{id}", async ([FromRoute] int id, [FromServices] ITodoService
 			TodoRecord? todos;
 			try
 			{
-				todos = await todoService.GetTodoById(id);
+				todos = await todoService.GetTodoByIdAsync(id);
 				return Results.Ok(todos);
 			}
 			catch (HttpRequestException ex)
