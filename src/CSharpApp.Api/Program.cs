@@ -1,3 +1,6 @@
+using CSharpApp.Core.Dtos;
+using System.Collections.ObjectModel;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog(new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger());
@@ -22,20 +25,49 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
+Func<HttpRequestException, IResult> convertHttpRequestExceptionToResult = (HttpRequestException ex) =>
+{
+	return ex.StatusCode switch
+	{
+		System.Net.HttpStatusCode.NotFound => Results.NotFound(),
+		System.Net.HttpStatusCode.ServiceUnavailable => Results.StatusCode(StatusCodes.Status503ServiceUnavailable),
+		_ => Results.NoContent(),
+	};
+};
+
 app.MapGet("/todos", async ([FromServices] ITodoService todoService) =>
 		{
-			var todos = await todoService.GetAllTodos();
-			return todos;
+			ReadOnlyCollection<TodoRecord> todos;
+			try
+			{
+				todos = await todoService.GetAllTodos();
+				return Results.Ok(todos);
+			}
+			catch (HttpRequestException ex)
+			{
+				return convertHttpRequestExceptionToResult(ex);
+			}
 		})
 		.WithName("GetTodos")
-		.WithOpenApi();
+		.WithOpenApi()
+		.Produces<ReadOnlyCollection<TodoRecord>>(StatusCodes.Status200OK);
 
 app.MapGet("/todos/{id}", async ([FromRoute] int id, [FromServices] ITodoService todoService) =>
 		{
-			var todos = await todoService.GetTodoById(id);
-			return todos;
+			TodoRecord? todos;
+			try
+			{
+				todos = await todoService.GetTodoById(id);
+				return Results.Ok(todos);
+			}
+			catch (HttpRequestException ex)
+			{
+				return convertHttpRequestExceptionToResult(ex);
+			}
 		})
 		.WithName("GetTodosById")
-		.WithOpenApi();
+		.WithOpenApi()
+		.Produces<TodoRecord?>(StatusCodes.Status200OK)
+		.Produces(StatusCodes.Status404NotFound);
 
 app.Run();
