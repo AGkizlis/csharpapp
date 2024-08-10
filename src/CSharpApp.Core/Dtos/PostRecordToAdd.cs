@@ -1,6 +1,6 @@
-namespace CSharpApp.Application.Dtos;
+namespace CSharpApp.Core.Dtos;
 
-public record PostRecordToPOST(
+public record PostRecordToAdd(
 		[property: JsonProperty("userId")] int UserId,
 		[property: JsonProperty("title")] string Title,
 		[property: JsonProperty("body")] string Body
