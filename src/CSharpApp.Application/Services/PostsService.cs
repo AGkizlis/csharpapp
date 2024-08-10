@@ -32,6 +32,7 @@
 
 		public async Task<bool> DeletePostAsync(int id)
 		{
+			//TODO: Handle "Not Found"
 			var response = await httpClient.DeleteAsync($"posts/{id}");
 			return (response.StatusCode == System.Net.HttpStatusCode.OK);
 		}
