@@ -1,7 +1,6 @@
 ﻿namespace CSharpApp.Application.Services
 {
-	//TODO: Make it abstract so it's never used as is, but only by descendants. That way, the correct HttpClient will be injected.
-	public class GenericService<T, TWithoutId, K>(
+	public abstract class GenericService<T, TWithoutId, K>(
 		HttpClient httpClient,
 		ILogger<K> logger,
 		string endpoint)
