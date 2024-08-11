@@ -1,9 +1,5 @@
 namespace CSharpApp.Core.Interfaces;
 
-public interface IPostsService
+public interface IPostsService : IGenericService<PostRecord, PostRecordToAdd>
 {
-	Task<ReadOnlyCollection<PostRecord>> GetAllPostsAsync();
-	Task<PostRecord?> GetPostByIdAsync(int id);
-	Task<PostRecord?> AddPostAsync(PostRecordToAdd newPost);
-	Task DeletePostAsync(int id);
 }

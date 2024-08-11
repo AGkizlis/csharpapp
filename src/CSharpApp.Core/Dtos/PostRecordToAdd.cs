@@ -1,7 +1,13 @@
 namespace CSharpApp.Core.Dtos;
 
-public record PostRecordToAdd(
-		[property: JsonProperty("userId")] int UserId,
-		[property: JsonProperty("title")] string Title,
-		[property: JsonProperty("body")] string Body
-);
+public class PostRecordToAdd
+{
+	[property: JsonProperty("userId")]
+	public int UserId { get; set; }
+
+	[property: JsonProperty("title")]
+	public string Title { get; set; } = string.Empty;
+
+	[property: JsonProperty("body")]
+	public string Body { get; set; } = string.Empty;
+}

@@ -13,7 +13,7 @@ namespace CSharpApp.Api.Configuration
 				ReadOnlyCollection<PostRecord> posts;
 				try
 				{
-					posts = await postsService.GetAllPostsAsync();
+					posts = await postsService.GetAllEntitiesAsync();
 					return Results.Ok(posts);
 				}
 				catch (HttpRequestException ex)
@@ -31,7 +31,7 @@ namespace CSharpApp.Api.Configuration
 				PostRecord? posts;
 				try
 				{
-					posts = await postsService.GetPostByIdAsync(id);
+					posts = await postsService.GetEntityByIdAsync(id);
 					return Results.Ok(posts);
 				}
 				catch (HttpRequestException ex)
@@ -50,7 +50,7 @@ namespace CSharpApp.Api.Configuration
 				PostRecord? post;
 				try
 				{
-					post = await postsService.AddPostAsync(newPost);
+					post = await postsService.AddEntityAsync(newPost);
 					return Results.Ok(post);
 				}
 				catch (HttpRequestException ex)
@@ -71,7 +71,7 @@ namespace CSharpApp.Api.Configuration
 			{
 				try
 				{
-					await postsService.DeletePostAsync(id);
+					await postsService.DeleteEntityAsync(id);
 				}
 				catch (HttpRequestException ex)
 				{
