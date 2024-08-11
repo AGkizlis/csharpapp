@@ -1,8 +1,9 @@
+using CSharpApp.Core.Interfaces;
+
 namespace CSharpApp.Core.Dtos;
 
-public record TodoRecord(
-		[property: JsonProperty("userId")] int UserId,
-		[property: JsonProperty("id")] int Id,
-		[property: JsonProperty("title")] string Title,
-		[property: JsonProperty("completed")] bool Completed
-);
+public class TodoRecord : TodoRecordToAdd, IEntity
+{
+	[property: JsonProperty("id")]
+	public int Id { get; set; }
+}

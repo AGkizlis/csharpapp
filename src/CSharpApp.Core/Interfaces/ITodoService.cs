@@ -1,7 +1,5 @@
 namespace CSharpApp.Core.Interfaces;
 
-public interface ITodoService
+public interface ITodoService : IGenericService<TodoRecord, TodoRecordToAdd>
 {
-	Task<TodoRecord?> GetTodoByIdAsync(int id);
-	Task<ReadOnlyCollection<TodoRecord>> GetAllTodosAsync();
 }

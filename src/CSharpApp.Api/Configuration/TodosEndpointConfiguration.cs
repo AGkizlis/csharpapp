@@ -12,7 +12,7 @@ namespace CSharpApp.Api.Configuration
 				ReadOnlyCollection<TodoRecord> todos;
 				try
 				{
-					todos = await todoService.GetAllTodosAsync();
+					todos = await todoService.GetAllEntitiesAsync();
 					return Results.Ok(todos);
 				}
 				catch (HttpRequestException ex)
@@ -30,7 +30,7 @@ namespace CSharpApp.Api.Configuration
 				TodoRecord? todo;
 				try
 				{
-					todo = await todoService.GetTodoByIdAsync(id);
+					todo = await todoService.GetEntityByIdAsync(id);
 					return Results.Ok(todo);
 				}
 				catch (HttpRequestException ex)
