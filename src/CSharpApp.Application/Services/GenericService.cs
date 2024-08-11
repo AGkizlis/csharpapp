@@ -10,6 +10,9 @@
 		where T : class, TWithoutId, IEntity
 		where K : GenericService<T, TWithoutId, K>
 	{
+		private bool disposed = false;
+		private bool httpClientIsDisposed = false;
+
 		public async Task<ReadOnlyCollection<T>> GetAllEntitiesAsync()
 		{
 			var response = await GetFromJsonAsync<List<T>>(endpoint);
@@ -66,7 +69,31 @@
 			response.EnsureSuccessStatusCode();
 		}
 
-		public void Dispose() => httpClient?.Dispose();
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposed)
+			{
+				return;
+			}
+
+			if (disposing)
+			{
+				// Dispose managed state (managed objects).
+				if (!httpClientIsDisposed)
+				{
+					httpClient.Dispose();
+					httpClientIsDisposed = true;
+				}
+			}
+
+			disposed = true;
+		}
 
 		private async Task<M?> GetFromJsonAsync<M>(string? requestUri) where M : class
 		{
