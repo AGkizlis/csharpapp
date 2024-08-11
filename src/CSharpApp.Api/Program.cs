@@ -28,6 +28,13 @@ app.UseHttpsRedirection();
 
 Func<HttpRequestException, IResult> convertHttpRequestExceptionToResult = (HttpRequestException ex) =>
 {
+	/*
+	 * This method should be enough for most cases. However, that depends on
+	 * business requirements. So, depending on who makes the endpoint calls
+	 * and what level of detail is expected on the result in case of failure,
+	 * this method might need adjustments. It is even possible that each endpoint
+	 * will need different handling and this method should be removed.
+	 */
 	return ex.StatusCode switch
 	{
 		System.Net.HttpStatusCode.NotFound => Results.NotFound(),
@@ -146,14 +153,20 @@ app.MapPost("/posts", async ([FromBody] PostRecordToAdd newPost, [FromServices] 
 
 app.MapDelete("/posts/{id}", async ([FromRoute] int id, [FromServices] IPostsService postsService) =>
 		{
-			//TODO: Handle "Not Found"
-			var deleted = await postsService.DeletePostAsync(id);
-			if (deleted) return Results.Ok();
-			return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+			try
+			{
+				await postsService.DeletePostAsync(id);
+			}
+			catch (HttpRequestException ex)
+			{
+				return convertHttpRequestExceptionToResult(ex);
+			}
+			return Results.Ok();
 		})
 		.WithName("DeletePost")
 		.WithOpenApi()
 		.Produces(StatusCodes.Status200OK)
+		.Produces(StatusCodes.Status404NotFound)
 		.Produces(StatusCodes.Status503ServiceUnavailable);
 
 app.Run();

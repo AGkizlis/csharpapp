@@ -30,11 +30,10 @@
 			return result;
 		}
 
-		public async Task<bool> DeletePostAsync(int id)
+		public async Task DeletePostAsync(int id)
 		{
-			//TODO: Handle "Not Found"
 			var response = await httpClient.DeleteAsync($"posts/{id}");
-			return (response.StatusCode == System.Net.HttpStatusCode.OK);
+			response.EnsureSuccessStatusCode();
 		}
 
 		public void Dispose() => httpClient?.Dispose();
